@@ -2,13 +2,13 @@
 
 extradirs=$(filter-out /usr,$(sort $(libgit2) $(gflags)))
 
-override CPPFLAGS += $(patsubst %,-I%/include, $(extradirs)) -I src/vendor/re2/ -I src/vendor/utf8cpp/source -I src/vendor/libdivsufsort/build/include
+override CPPFLAGS += $(patsubst %,-I%/include, $(extradirs)) -I src/vendor/re2/ -I src/vendor/utf8cpp/source -I src/vendor/libdivsufsort/build/include -I /usr/include/subversion-1 -I /usr/include/apr-1.0/
 override LDFLAGS += $(patsubst %, -L%/lib, $(extradirs))
 override LDFLAGS += $(patsubst %, -Wl$(comma)-R%/lib, $(extradirs))
 
-override CXXFLAGS+=-g -std=c++0x -Wall -Werror -Wno-sign-compare -pthread
+override CXXFLAGS+=-g -std=c++0x -Wall -Wno-sign-compare -pthread
 override LDFLAGS+=-pthread
-LDLIBS=-lgit2 -ljson -lgflags $(re2) $(divsufsort) -lz -lssl -lcrypto -ldl -lboost_system -lboost_filesystem
+LDLIBS=-lgit2 -ljson -lgflags $(re2) $(divsufsort) -lz -lssl -lcrypto -ldl -lboost_system -lboost_filesystem -lsvncpp
 
 re2 := src/vendor/re2/obj/libre2.a
 divsufsort := src/vendor/libdivsufsort/build/lib/libdivsufsort.a

@@ -31,6 +31,7 @@ struct repo_spec {
 struct index_spec {
     std::string name;
     std::vector<std::string> paths;
+    std::vector<std::string> svn_urls;
     std::vector<repo_spec> repos;
 };
 

@@ -299,6 +299,9 @@ json_parse_error parse_index_spec(json_object *in, index_spec *out) {
     err = parse_object(in, "fs_paths", &out->paths);
     if (!err.ok())
         return err;
+    err = parse_object(in, "svn_urls", &out->svn_urls);
+    if (!err.ok())
+        return err;
     json_object *repos = json_object_object_get(in, "repositories");
     if (repos == NULL)
         return json_parse_error();

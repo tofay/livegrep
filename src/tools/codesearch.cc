@@ -12,6 +12,7 @@
 #include "debug.h"
 #include "git_indexer.h"
 #include "fs_indexer.h"
+#include "svn_indexer.h"
 
 #include "transport.h"
 
@@ -124,7 +125,7 @@ void build_index(code_searcher *cs, const vector<std::string> &argv) {
         fprintf(stderr, "parsing %s: %s\n", argv[1].c_str(), err.err().c_str());
         exit(1);
     }
-    if (spec.paths.empty() && spec.repos.empty()) {
+    if (spec.paths.empty() && spec.repos.empty() && spec.svn_urls.empty()) {
         fprintf(stderr, "%s: You must specify at least one path to index.\n", argv[1].c_str());
         exit(1);
     }
@@ -148,6 +149,13 @@ void build_index(code_searcher *cs, const vector<std::string> &argv) {
             indexer.walk(*rev);
             fprintf(stderr, "done\n");
         }
+    }
+
+    for (auto it = spec.svn_urls.begin(); it != spec.svn_urls.end(); ++it) {
+        fprintf(stderr, "Walking name=`%s'...", it->c_str());
+        svn_indexer indexer(cs, *it, 0);
+        indexer.walk(*it);
+        fprintf(stderr, "done.\n");
     }
 }
 
