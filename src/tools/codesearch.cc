@@ -125,7 +125,7 @@ void build_index(code_searcher *cs, const vector<std::string> &argv) {
         fprintf(stderr, "parsing %s: %s\n", argv[1].c_str(), err.err().c_str());
         exit(1);
     }
-    if (spec.paths.empty() && spec.repos.empty() && spec.svn_urls.empty()) {
+    if (spec.paths.empty() && spec.repos.empty() && spec.svn_repos.empty()) {
         fprintf(stderr, "%s: You must specify at least one path to index.\n", argv[1].c_str());
         exit(1);
     }
@@ -151,10 +151,11 @@ void build_index(code_searcher *cs, const vector<std::string> &argv) {
         }
     }
 
-    for (auto it = spec.svn_urls.begin(); it != spec.svn_urls.end(); ++it) {
-        fprintf(stderr, "Walking name=`%s'...", it->c_str());
-        svn_indexer indexer(cs, *it, 0);
-        indexer.walk(*it);
+    for (auto it = spec.svn_repos.begin(); it != spec.svn_repos.end(); ++it) {
+        fprintf(stderr, "Walking name=%s, url=%s",
+                it->name.c_str(), it->url.c_str());
+        svn_indexer indexer(cs, it->url, it->name, it->metadata);
+        indexer.walk();
         fprintf(stderr, "done.\n");
     }
 }

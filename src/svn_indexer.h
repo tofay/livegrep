@@ -25,16 +25,18 @@ struct json_object;
 class svn_indexer {
 public:
     svn_indexer(code_searcher *cs,
+                const std::string& url,
                 const std::string& name,
                 json_object *metadata = 0);
     ~svn_indexer();
-    void walk(std::string ref);
+    void walk();
 protected:
     void walk_dir(std::string pfx);
 
     code_searcher *cs_;
     svn::Client *client_;
     const indexed_tree *idx_tree_;
+    const std::string url_;
     std::string name_;
     json_object *metadata_;
     svn::Revision rev_;

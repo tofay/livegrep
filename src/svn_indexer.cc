@@ -13,21 +13,22 @@ namespace {
 };
 
 svn_indexer::svn_indexer(code_searcher *cs,
+                         const std::string& url,
                          const std::string& name,
                          json_object *metadata)
-    : cs_(cs), name_(name), metadata_(metadata) {
+    : cs_(cs), url_(url), name_(name), metadata_(metadata) {
     svn::Context * context = new svn::Context();
     client_ = new svn::Client(context);
     rev_ = svn::Revision::HEAD;
+    idx_tree_ = cs_->open_tree(name_, metadata_, "");
+    len_base_url_ = url_.length();
 }
 
 svn_indexer::~svn_indexer() {
 }
 
-void svn_indexer::walk(std::string url) {
-    idx_tree_ = cs_->open_tree(name_, metadata_, "");
-    len_base_url_ = url.length();
-    walk_dir(url);
+void svn_indexer::walk() {
+    walk_dir(url_);
 }
 
 void svn_indexer::walk_dir(std::string url) {

@@ -28,10 +28,18 @@ struct repo_spec {
     repo_spec() : metadata(NULL) {}
 };
 
+struct svn_repo_spec {
+    std::string url;
+    std::string name;
+    json_object *metadata;
+
+    svn_repo_spec() : metadata(NULL) {}
+};
+
 struct index_spec {
     std::string name;
     std::vector<std::string> paths;
-    std::vector<std::string> svn_urls;
+    std::vector<svn_repo_spec> svn_repos;
     std::vector<repo_spec> repos;
 };
 

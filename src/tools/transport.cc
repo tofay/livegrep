@@ -113,6 +113,7 @@ bool getline(std::string &out, FILE *in) {
 json_parse_error parse_object(json_object *j, bool *);
 json_parse_error parse_object(json_object *j, std::string *);
 json_parse_error parse_object(json_object *j, repo_spec *);
+json_parse_error parse_object(json_object *j, svn_repo_spec *);
 json_parse_error parse_object(json_object *j, json_object **);
 
 template <class T>
@@ -226,6 +227,18 @@ json_parse_error parse_object(json_object *js, repo_spec *r) {
     return err;
 }
 
+json_parse_error parse_object(json_object *js, svn_repo_spec *r) {
+    if (json_object_get_type(js) != json_type_object)
+        return json_parse_error("expected a JSON object");
+    json_parse_error err;
+    err = parse_object(js, "url", &r->url);
+    if (!err.ok()) return err;
+    err = parse_object(js, "name", &r->name);
+    if (!err.ok()) return err;
+    err = parse_object(js, "metadata", &r->metadata);
+    return err;
+}
+
 };
 
 codesearch_transport::codesearch_transport(FILE *in, FILE *out) : in_(in), out_(out) {
@@ -299,7 +312,17 @@ json_parse_error parse_index_spec(json_object *in, index_spec *out) {
     err = parse_object(in, "fs_paths", &out->paths);
     if (!err.ok())
         return err;
-    err = parse_object(in, "svn_urls", &out->svn_urls);
+    json_object *svn_repos = json_object_object_get(in, "svn_repositories");
+    if (svn_repos == NULL)
+        return json_parse_error();
+    if (json_object_get_type(svn_repos) == json_type_object) {
+        svn_repo_spec s;
+        err = parse_object(in, "svn_repositories", &s);
+        if (err.ok())
+            out->svn_repos.push_back(s);
+    } else {
+        err = parse_object(in, "svn_repositories", &out->svn_repos);
+    }
     if (!err.ok())
         return err;
     json_object *repos = json_object_object_get(in, "repositories");
