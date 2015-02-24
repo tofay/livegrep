@@ -5,7 +5,7 @@
 #include "metrics.h"
 #include "svn_indexer.h"
 #include "debug.h"
-#include "svncpp/dirent.hpp"
+#include <svncpp/dirent.hpp>
 
 namespace {
     metric svn_walk("timer.svn.walk");
@@ -49,12 +49,13 @@ void svn_indexer::walk_dir(std::string url) {
     for (it = dirEntries.begin(); it != dirEntries.end(); it++) {
         const svn::DirEntry & dirEntry = *it;
         std::string path = url + "/" + std::string(dirEntry.name());
+        path = svn::Url::escape(path.c_str());
         if (dirEntry.kind() == svn_node_dir)        {
             walk_dir(path);
         }
         else {
             cs_->index_file(idx_tree_,
-                            path.substr(len_base_url_),
+                            path,
                             client_->cat(path, rev_, rev_));
         }
     }
