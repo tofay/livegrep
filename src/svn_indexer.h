@@ -9,7 +9,7 @@
 #define CODESEARCH_SVN_INDEXER_H
 
 #include <string>
-#include "svncpp/client.hpp"
+#include <svncpp/client.hpp>
 
 class code_searcher;
 

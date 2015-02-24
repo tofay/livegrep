@@ -1,11 +1,12 @@
 //#include <gflags/gflags.h>
 #include <string>
+#include <svncpp/dirent.hpp>
+#include <svncpp/url.hpp>
 
 #include "codesearch.h"
 #include "metrics.h"
 #include "svn_indexer.h"
 #include "debug.h"
-#include <svncpp/dirent.hpp>
 
 namespace {
     metric svn_walk("timer.svn.walk");
@@ -55,7 +56,7 @@ void svn_indexer::walk_dir(std::string url) {
         }
         else {
             cs_->index_file(idx_tree_,
-                            path,
+                            path.substr(len_base_url_),
                             client_->cat(path, rev_, rev_));
         }
     }
