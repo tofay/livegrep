@@ -49,8 +49,7 @@ void svn_indexer::walk_dir(std::string url) {
     svn::DirEntries::const_iterator it;
     for (it = dirEntries.begin(); it != dirEntries.end(); it++) {
         const svn::DirEntry & dirEntry = *it;
-        std::string path = url + "/" + std::string(dirEntry.name());
-        path = svn::Url::escape(path.c_str());
+        std::string path = url + "/" + svn::Url::escape(dirEntry.name());
         if (dirEntry.kind() == svn_node_dir)        {
             walk_dir(path);
         }
